@@ -35,7 +35,13 @@ public final class LambdaFilter extends JFrame {
     private static final long serialVersionUID = 1760990730218643730L;
 
     private enum Command {
-        IDENTITY("No modifications", Function.identity());
+        IDENTITY("No modifications", Function.identity()),
+        TOLOWER("ToLowerCase", s -> s.toLowerCase()),
+        COUNTCHAR("CountChar", s -> Integer.toString(s.length())),
+        NUMLINES("Number Lines", s -> Long.toString(s.chars()
+                                                     .filter(f -> f == '\n')
+                                                     .count() + 1));
+
 
         private final String commandName;
         private final Function<String, String> fun;
@@ -63,19 +69,29 @@ public final class LambdaFilter extends JFrame {
         panel1.setLayout(layout);
         final JComboBox<Command> combo = new JComboBox<>(Command.values());
         panel1.add(combo, BorderLayout.NORTH);
+
+        //CentralPanel
         final JPanel centralPanel = new JPanel(new GridLayout(1, 2));
+
+        //TexArea Left
         final JTextArea left = new JTextArea();
         left.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+
+        //TextArea right
         final JTextArea right = new JTextArea();
         right.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         right.setEditable(false);
         centralPanel.add(left);
         centralPanel.add(right);
         panel1.add(centralPanel, BorderLayout.CENTER);
+
+        //Button
         final JButton apply = new JButton("Apply");
         apply.addActionListener(ev -> right.setText(((Command) combo.getSelectedItem()).translate(left.getText())));
         panel1.add(apply, BorderLayout.SOUTH);
         setContentPane(panel1);
+
+        //Display Responsive
         final Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
         final int sw = (int) screen.getWidth();
         final int sh = (int) screen.getHeight();
